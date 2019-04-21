@@ -10,7 +10,7 @@ import {
     Alert
   } from 'react-native';
 
-import axios from 'react-native-axios';
+import axios from 'axios';
 
 
   export default class LoginView extends Component {
@@ -36,7 +36,8 @@ import axios from 'react-native-axios';
         //         (data) => { console.log('--get data--', data);},
         //         (error) => { console.log('--Bad request--');}
         //     );
-        axios.get('http://10.0.2.2:65127/api/values')
+        const model = { email: this.state.email, password: this.state.password };
+        axios.post('http://10.0.2.2:65127/api/account/login', model)
             .then( 
                 (data) => { console.log('--get data--', data);},
                 (error) => { console.log('--Bad request--');}
