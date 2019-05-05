@@ -21,18 +21,19 @@ export default class RegisterPage extends Component {
         state = {
             email: '',
             password: '',
-            photo: null
+            photo: null,
+            type: ''
         }
     }
 
     handleChoosePhoto = () => {
-        const options = {
-            noData: true,
+        const options = {  
+            //noData: true,
         };
         ImagePicker.launchImageLibrary(options, response => {
-            //console.log('-----Choose image-----', response);
-              if (response.uri) {
-                this.setState({ photo: response });
+            console.log('-----Choose image-----', response);
+              if (response.data) {
+                this.setState({ photo: response.data, type: `data:${response.type};base64,` });
               }
         });
     };
@@ -50,8 +51,13 @@ export default class RegisterPage extends Component {
         //         (data) => { console.log('--get data--', data);},
         //         (error) => { console.log('--Bad request--');}
         //     );
-        const model = { email: this.state.email, password: this.state.password };
-        axios.post('http://10.0.2.2:65127/api/account/login', model)
+        const model = 
+        { 
+            email: this.state.email, 
+            password: this.state.password,
+            image: this.state.photo 
+        };
+        axios.post('http://10.0.2.2:65127/api/account/register', model)
             .then(
                 (data) => { console.log('--get data--', data); },
                 (error) => { console.log('--Bad request--'); }
@@ -64,10 +70,12 @@ export default class RegisterPage extends Component {
     }
 
     render() {
-        let photo=null; 
+        let photo=null;
+        let type=''; 
         if(this.state!==null)
         {
             photo=this.state.photo;
+            type=this.state.type;
         }
         return (
 
@@ -75,9 +83,9 @@ export default class RegisterPage extends Component {
                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                     {photo && (
                         <Image
-                            source={{ uri: photo.uri }}
+                            source={{ uri: type+photo }}
                             style={{ width: 300, height: 300 }}
-                        />
+                        /> 
                     )}
                     <Button title="Choose Photo" onPress={this.handleChoosePhoto} />
                 </View>
